@@ -35,22 +35,38 @@ type Line struct {
 
 // NewLineByIssue is an initializer by Issue
 func NewLineByIssue(repoName string, issue github.Issue) Line {
+	var user string
+
+	if assignees := issue.Assignees; len(assignees) != 0 {
+		user = *assignees[0].Login
+	} else {
+		user = *issue.User.Login
+	}
+
 	return Line{
 		title:    *issue.Title,
 		repoName: repoName,
 		url:      *issue.HTMLURL,
-		user:     *issue.User.Login,
+		user:     user,
 		status:   getIssueStatus(issue),
 	}
 }
 
 // NewLineByPullRequest is an initializer by PR
 func NewLineByPullRequest(repoName string, pr github.PullRequest) Line {
+	var user string
+
+	if assignees := pr.Assignees; len(assignees) != 0 {
+		user = *assignees[0].Login
+	} else {
+		user = *pr.User.Login
+	}
+
 	return Line{
 		title:    *pr.Title,
 		repoName: repoName,
 		url:      *pr.HTMLURL,
-		user:     *pr.User.Login,
+		user:     user,
 		status:   getPullRequestStatus(pr),
 	}
 }
